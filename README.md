@@ -31,8 +31,8 @@ includes features such as copying the chat output to the clipboard and clearing 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/simple-web-chat.git
-   cd simple-web-chat
+   git clone https://github.com/GNichita/OpenAiApi.git
+   cd OpenAiApi
 
 2. **Set up Azure OpenAI**:
     - Obtain your Azure OpenAI API key.
