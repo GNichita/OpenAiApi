@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professional Web Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; }
+        .container { display: flex; flex-direction: column; height: 100%; }
+        .section { padding: 10px; box-sizing: border-box; border-bottom: 1px solid #ccc; }
+        .section:last-child { border-bottom: none; }
+        .textarea { width: 100%; height: 100px; box-sizing: border-box; }
+        .textarea-wrapper { display: flex; flex-direction: column; height: 100%; }
+        .response-container { display: flex; flex-direction: column; height: 100%; }
+        .response { flex: 1; overflow-y: auto; border: 1px solid #ccc; border-radius: 4px; padding: 10px; background-color: #f9f9f9; }
+        .button, .copy-button, .clear-button { width: 100%; padding: 10px; border: none; cursor: pointer; }
+        .button { background-color: #007bff; color: white; }
+        .button:hover { background-color: #0056b3; }
+        .copy-button { background-color: #28a745; color: white; }
+        .copy-button:hover { background-color: #218838; }
+        .clear-button { background-color: #dc3545; color: white; }
+        .clear-button:hover { background-color: #c82333; }
+        .button-group { display: flex; gap: 10px; margin-top: 10px; }
+        .send-button-container { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="section">
+        <textarea id="systemMessage" class="textarea" placeholder="Enter system message..."></textarea>
+    </div>
+    <div class="section textarea-wrapper">
+        <textarea id="userMessage" class="textarea" placeholder="Enter user message..."></textarea>
+        <div class="send-button-container">
+            <button class="button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <div class="section response-container">
+        <div id="response" class="response"></div>
+        <div class="button-group">
+            <button class="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+            <button class="clear-button" onclick="clearOutput()">Clear Output</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        // Clear the response area before sending the new message
+        document.getElementById('response').innerText = '';
+
+        const systemMessage = document.getElementById('systemMessage').value;
+        const userMessage = document.getElementById('userMessage').value;
+
+        fetch('/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                systemMessage: systemMessage,
+                userMessage: userMessage
+            })
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('response').innerText = data;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function copyToClipboard() {
+        const responseText = document.getElementById('response').innerText;
+        navigator.clipboard.writeText(responseText)
+            .then(() => {
+                alert('Copied to clipboard!');
+            })
+            .catch(err => console.error('Error copying text: ', err));
+    }
+
+    function clearOutput() {
+        document.getElementById('response').innerText = '';
+    }
+</script>
+</body>
+</html>
